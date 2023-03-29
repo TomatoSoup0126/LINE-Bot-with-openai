@@ -32,18 +32,18 @@ async function handleEvent(event) {
   try {
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: "Hello world" }],
+      messages: [{ role: "user", content: event.message.text }]
     })
 
-    console.log(completion.data.choices[0].message)
+    if (completion.data.choices[0]?.message?.content) {
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: completion.data.choices[0].message.content
+      })
+    }
   } catch (error) {
     console.error(error)
   }
-  
-  return client.replyMessage(event.replyToken, {
-    type: 'text',
-    text: event.message.text
-  })
 }
 
 const port = process.env.PORT || 3000
