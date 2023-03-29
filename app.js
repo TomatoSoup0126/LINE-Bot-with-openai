@@ -1,6 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import line from '@line/bot-sdk'
+import { Configuration, OpenAIApi } from 'openai'
 
 dotenv.config()
 
@@ -11,6 +12,11 @@ const lineConfig = {
   channelSecret: process.env.CHANNEL_SECRET,
 }
 
+const openaiConfig = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+})
+const openai = new OpenAIApi(openaiConfig)
+
 app.post('/webhook', line.middleware(lineConfig), (req, res) => {
   Promise
     .all(req.body.events.map(handleEvent))
@@ -18,11 +24,22 @@ app.post('/webhook', line.middleware(lineConfig), (req, res) => {
 })
 
 const client = new line.Client(lineConfig)
-function handleEvent(event) {
+async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
     return Promise.resolve(null)
   }
 
+  try {
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: "Hello world" }],
+    })
+
+    console.log(completion.data.choices[0].message)
+  } catch (error) {
+    console.error(error)
+  }
+  
   return client.replyMessage(event.replyToken, {
     type: 'text',
     text: event.message.text
