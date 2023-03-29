@@ -2,6 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import line from '@line/bot-sdk'
 import { Configuration, OpenAIApi } from 'openai'
+import prompt from './prompt/astrologer.js'
 
 dotenv.config()
 
@@ -32,7 +33,10 @@ async function handleEvent(event) {
   try {
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: event.message.text }]
+      messages: [
+        ...prompt,
+        { role: "user", content: event.message.text }
+      ]
     })
 
     if (completion.data.choices[0]?.message?.content) {
