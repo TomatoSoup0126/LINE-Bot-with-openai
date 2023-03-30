@@ -1,11 +1,12 @@
 {
-  "name": "line-bot-with-gpt4",
+  "name": "line-bot-with-gpt",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "The auto-reply bot by OpenAI, created using ChatCompletion (GPT-3.5 Turbo).",
+  "main": "app.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
     "dev": "nodemon app.js"
   },
   "keywords": [],
